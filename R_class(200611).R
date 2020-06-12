@@ -74,3 +74,4 @@ first_day=function(x){
   floor_date(x,'month')
 }
 first_day(Sys.Date())
+
