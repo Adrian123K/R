@@ -92,3 +92,18 @@ head(univ)
 #94
 data.frame(사원명=emp[emp$empno %in% emp$mgr,'ename'])
 
+#97
+cday=read.csv('crime_day.csv',header=T)
+cday<-cday[trimws(cday$C_C)=='강력범죄',]
+cday[cday$CNT==max(cday$CNT),]
+
+x=data.frame(이름=emp$ename, 월급=emp$sal, 순위=rank(-emp$sal, ties.method = 'min', ))
+orderBy(~순위,x)
+
+x2=data.frame(이름=emp$ename, 월급=emp$sal, 순위=dense_rank(-emp$sal))
+orderBy(~순위,x2)
+
+#99
+rs=(data.frame(이름=emp$ename, 월급=emp$sal,직업=emp$job, 순위=dense_rank(-emp$sal)))
+rs=orderBy(~순위,rs)
+rs[rs$직업=='SALESMAN',]
