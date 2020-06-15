@@ -107,3 +107,9 @@ orderBy(~순위,x2)
 rs=(data.frame(이름=emp$ename, 월급=emp$sal,직업=emp$job, 순위=dense_rank(-emp$sal)))
 rs=orderBy(~순위,rs)
 rs[rs$직업=='SALESMAN',]
+
+#100
+cancer=read.csv('cancer2.csv',header=T)
+cdf=cancer[cancer$성별=='여자' & cancer$암종!='모든암',]
+cdf=unique(cdf[!is.na(cdf$환자수),])
+cdf
