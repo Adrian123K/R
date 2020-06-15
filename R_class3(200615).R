@@ -51,7 +51,44 @@ rs
 barplot(rs, col=rainbow(4), legend=rownames(rs),beside=T,args.legend=list(x='topright',bty='n',inset=c(-0.01,0)))
 
 #87
-install.packages("")
+library(googleVis)
 line=read.csv('1-4호선승하차승객수.csv',header=T)
 t1 <- gvisMotionChart(line, idvar="line_no", timevar="time")
 plot(t1)
+
+#88
+line2=read.csv('서울지하철_5-8호선_이용현황_시간대별.csv',header=T)
+t2 = gvisMotionChart(line2, idvar="호선명", timevar="시간")
+plot(t2)
+
+emp
+rbind(
+  emp[ emp$deptno %in% c(10,20), c("ename","sal","deptno") ],
+  emp[ emp$deptno ==10, c("ename","sal","deptno") ] 
+  )
+
+#90
+x=rbind(aggregate(sal~deptno,emp,sum),c('total',sum(emp$sal)))
+names(x)=c('부서번호','토탈월급')
+x
+
+install.packages("doBy")
+library(doBy)
+
+#91
+rs=rbind(aggregate(sal~job,emp,sum),c('',sum(emp$sal)))
+names(rs)=c('직업','토탈값')
+rs
+
+library(doBy)
+x2=setdiff(
+  emp[emp$deptno %in% c(10,20),c('ename','sal','deptno')],
+  emp[emp$deptno==10,c('ename','sal','deptno')])
+orderBy(~ename,x2)
+
+univ<-read.csv('전국_대학별등록금통계_현황.csv', stringsAsFactors=F,header=T)
+head(univ)
+
+#94
+data.frame(사원명=emp[emp$empno %in% emp$mgr,'ename'])
+
