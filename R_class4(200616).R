@@ -1,5 +1,6 @@
 getwd()
 
+###########################################R shiny 실습#####################################
 install.packages("ggplot2")
 install.packages("DT")
 install.packages("shiny")
@@ -124,7 +125,7 @@ barplot(emp$sal, main='Salary Bar Chart')
 ccnt=read.csv('창업건수.csv',header=T)
 ccnt
 
-#114
+#############################################################114
 
 library(shiny)
 create_cnt <- read.csv("창업건수.csv", header=T)
@@ -169,7 +170,7 @@ server <-function(input, output) {
 shinyApp(ui = ui, server = server)
 
 
-#115
+##########################################################115
 create_cnt <- read.csv("창업건수.csv", header=T)
 drop_cnt <- read.csv('폐업건수.csv',header=T)
 x=rbind(create_cnt,drop_cnt)
@@ -208,3 +209,314 @@ server <-function(input, output) {
 }
 # Run the app ----
 shinyApp(ui = ui, server = server)
+
+#############################################116
+library(shiny)
+library(datasets)
+setwd("d:/R") 
+create_cnt <- read.csv("창업건수.csv", header=T)
+drop_cnt <- read.csv("폐업건수.csv", header=T) 
+
+# Define UI ----
+ui <- fluidPage(    
+  # Give the page a title
+  titlePanel("연도별 업종별 창/폐업현황"),
+  # Generate a row with a sidebar
+  sidebarLayout(      
+    # Define the sidebar with one input
+    sidebarPanel(
+      selectInput("region", "업종:", 
+                  choices=colnames(create_cnt)[-1]),
+      hr(),
+      helpText("업종별 창업과 폐업 현황 보고서")
+    ),
+    # Create a spot for the barplot
+    mainPanel(
+      plotOutput("typePlot")  
+    )
+  )
+)
+
+# Define server logic ----
+server <-function(input, output) {
+  # Fill in the spot we created for a plot
+  output$typePlot <- renderPlot({
+    # Render a barplot
+    barplot( rbind( create_cnt[,input$region], 
+                    drop_cnt[,input$region] ),
+             main=input$region,
+             col = c("Sky Blue","Hot pink"),
+             beside=T, 
+             density=80,
+             names.arg= create_cnt$년도,    
+             ylab="건수",
+             xlab="연도")
+  })
+}
+
+# Run the app ----
+shinyApp(ui = ui, server = server)
+
+ui <- fluidPage(    
+  # Give the page a title
+  titlePanel("연도별 업종별 창/폐업현황"),
+  # Generate a row with a sidebar
+  sidebarLayout(      
+    # Define the sidebar with one input
+    sidebarPanel(
+      selectInput("region", "업종:", 
+                  choices=colnames(create_cnt)[-1]),
+      hr(),
+      helpText("업종별 창업과 폐업 현황 보고서")
+    ),
+    # Create a spot for the barplot
+    mainPanel(
+      plotOutput("typePlot")  
+    )
+  )
+)
+
+# Define server logic ----
+server <-function(input, output) {
+  # Fill in the spot we created for a plot
+  output$typePlot <- renderPlot({
+    # Render a barplot
+    barplot( rbind( create_cnt[,input$region], 
+                    drop_cnt[,input$region] ),
+             main=input$region,
+             col = c("Sky Blue","Hot pink"),
+             beside=T, 
+             density=80,
+             names.arg= create_cnt$년도,    
+             ylab="건수",
+             xlab="연도",
+             args.legend=list(x='topright', bty='n',inset=c(0,-0.2)),
+             legend=c('창업','폐업'))
+  })
+}
+
+# Run the app ----
+shinyApp(ui = ui, server = server)
+
+##############################################원형그래프 그리기######################################
+
+########################################121
+create_cnt=read.csv('창업건수.csv',head=T)
+x=create_cnt[create_cnt$년도=='2014',][-1]
+lab=colnames(x)
+x2=t(x)
+x2
+
+########################################123
+library(shiny)
+library(datasets)
+create_cnt <- read.csv("창업건수.csv", header=T)
+drop_cnt <- read.csv("폐업건수.csv", header=T) 
+
+# Define UI ----
+ui <- fluidPage(    
+  # Give the page a title
+  titlePanel("연도별 업종별 창업현황"),
+  # Generate a row with a sidebar
+  sidebarLayout(      
+    # Define the sidebar with one input
+    sidebarPanel(
+      selectInput("region", "업종:", 
+                  choices=create_cnt$년도),
+      hr(),
+      helpText("업종별 창업과 폐업 현황 보고서")
+    ),
+    # Create a spot for the barplot
+    mainPanel(
+      plotOutput("typePlot")  
+    )
+  )
+)
+
+# Define server logic ----
+server <-function(input, output) {
+  # Fill in the spot we created for a plot
+  output$typePlot <- renderPlot({
+        x=create_cnt[create_cnt$년도==input$region,-1]
+        pct=round(x/sum(x)*100,1)
+        lab=paste(colnames(x),pct,'%')
+        pie(t(x), main='연도별 업종 창업 비율', col=rainbow(7),labels=lab)
+        
+  })
+}
+
+# Run the app ----
+shinyApp(ui = ui, server = server)
+
+############################## 선생님 답#########################
+library(shiny)
+library(datasets)
+
+create_cnt <- read.csv("창업건수.csv", header=T)
+drop_cnt <- read.csv("폐업건수.csv", header=T) 
+# Define UI ----
+ui <- fluidPage(    
+  # Give the page a title
+  titlePanel("년도별 업종별 창업현황"),
+  # Generate a row with a sidebar
+  sidebarLayout(      
+    # Define the sidebar with one input
+    sidebarPanel(
+      selectInput("region", "년도:", 
+                  choices=create_cnt$년도 ) ,
+      helpText("년도별 창업 현황 보고서")
+    ),
+    # Create a spot for the barplot
+    mainPanel(
+      plotOutput("typePlot")  
+    )
+  )
+)
+
+# Define server logic ----
+server <-function(input, output) {
+  # Fill in the spot we created for a plot
+  output$typePlot <- renderPlot({
+    x2 <-  create_cnt[ create_cnt$년도==input$region, -1  ]
+    cnt_labels <- round( x2/sum(x2) * 100, 1) 
+    cnt_labels2 <-  paste( colnames(cnt_labels) ,cnt_labels ,'%') 
+    pie(  t(x2)  , col=rainbow(7), labels=cnt_labels2) 
+  })
+}
+
+# Run the app ----
+shinyApp(ui = ui, server = server)
+
+########################################124
+create_cnt <- read.csv("창업건수.csv", header=T)
+drop_cnt <- read.csv("폐업건수.csv", header=T) 
+
+# Define UI ----
+ui <- fluidPage(    
+  # Give the page a title
+  titlePanel("연도별 업종별 창/폐업현황"),
+  # Generate a row with a sidebar
+  sidebarLayout(      
+    # Define the sidebar with one input
+    sidebarPanel(
+      selectInput("region", "업종:", 
+                  choices=create_cnt$년도),
+      hr(),
+      helpText("업종별 창업과 폐업 현황 보고서")
+    ),
+    # Create a spot for the barplot
+    mainPanel(
+      plotOutput("typePlot")  
+    )
+  )
+)
+
+# Define server logic ----
+server <-function(input, output) {
+  # Fill in the spot we created for a plot
+  output$typePlot <- renderPlot({
+    x=create_cnt[create_cnt$년도==input$region,-1]
+    pct=t(x)/sum(t(x))
+    lab=paste(colnames(x),)
+    
+  })
+}
+
+# Run the app ----
+shinyApp(ui = ui, server = server)
+lab
+pct=
+  lab2=paste(x,lab,'')
+pie(x, main='2014년도 업종별 창업 비율', )
+
+##############################################
+library(shiny)
+library(datasets)
+
+create_cnt <- read.csv("창업건수.csv", header=T)
+drop_cnt <- read.csv("폐업건수.csv", header=T) 
+# Define UI ----
+ui <- fluidPage(    
+  # Give the page a title
+  titlePanel("연도별 업종별 폐업현황"),
+  # Generate a row with a sidebar
+  sidebarLayout(      
+    # Define the sidebar with one input
+    sidebarPanel(
+      selectInput("region", "년도:", 
+                  choices=drop_cnt$년도 ) ,
+      helpText("연도별 폐업 현황 보고서")
+    ),
+    # Create a spot for the barplot
+    mainPanel(
+      plotOutput("typePlot")  
+    )
+  )
+)
+
+# Define server logic ----
+server <-function(input, output) {
+  # Fill in the spot we created for a plot
+  output$typePlot <- renderPlot({
+    x2 <-  drop_cnt[ drop_cnt$년도==input$region, -1  ]
+    cnt_labels <- round( x2/sum(x2) * 100, 1) 
+    cnt_labels2 <-  paste( colnames(cnt_labels) ,cnt_labels ,'%') 
+    pie(  t(x2)  , col=rainbow(7), labels=cnt_labels2) 
+  })
+}
+
+# Run the app ----
+shinyApp(ui = ui, server = server)
+
+######################################## 125 ggplot2
+library(shiny)
+library(datasets)
+library(data.table)
+library(ggplot2)
+
+create_cnt <- read.csv("창업건수.csv", header=T)
+drop_cnt <- read.csv("폐업건수.csv", header=T) 
+# Define UI ----
+ui <- fluidPage(    
+  # Give the page a title
+  titlePanel("년도별 업종별 창업현황"),
+  # Generate a row with a sidebar
+  sidebarLayout(      
+    # Define the sidebar with one input
+    sidebarPanel(
+      selectInput("region", "년도:", 
+                  choices=create_cnt$년도 ) ,
+      helpText("년도별 창업 현황 보고서")
+    ),
+    # Create a spot for the barplot
+    mainPanel(
+      plotOutput("typePlot")  
+    )
+  )
+)
+
+# Define server logic ----
+server <-function(input, output) {
+  # Fill in the spot we created for a plot
+  output$typePlot <- renderPlot({
+    a=create_cnt[create_cnt$년도==input$region,-1]
+    a=data.table(colnames(a),t(a))
+    colnames(a)=c('가게','건수')
+    per=round(a$건수/sum(a$건수)*100,1)
+    ggplot(a, aes(x = "", y = 건수, fill=가게))+
+    geom_bar(width = 1, stat = "identity",color='white')+
+    coord_polar("y")+
+    geom_text(aes(label = paste0(per,"%")),position = position_stack(vjust = 0.5))
+  })
+}
+
+# Run the app ----
+shinyApp(ui = ui, server = server)
+
+################################################ 라인 그래프 그리기###############################
+
+######################################## 128
+cars=c(1,3,6,4,9)
+trucks=c(2,5,4,5,12)
+plot(cars,type='o',col='blue',ylim=c(0,12))
+lines(trucks, type='o',col='red',ylim=c(0,12))
