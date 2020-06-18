@@ -87,7 +87,7 @@ wordcloud(names(wc), freq=wc, scale=c(5,1), rot.per=0.25, min.freq=1, random.ord
 legend(0.3,1,"BTS UN 연설문", cex=0.8, fill=NA, border=NA, bg='white', text.col='red', text.font=2, box.col='red')
 
 library(KoNLP)
-library(wordCloud)
+library(wordcloud)
 useSejongDic()
 useNIADic()
 
