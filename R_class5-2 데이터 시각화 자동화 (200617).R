@@ -90,7 +90,7 @@ body <- dashboardBody(
     ##### box plot
     tabItem(tabName = "boxplot",
             sidebarPanel(
-              selectInput("in_sel_box_yVar","y Variable:", choices = NULL),
+              selectInput("in_sel_box_yVar","y Variable:", choices = NULL)
               #selectInput("in_sel_box_xVar","x Variable:", choices = NULL)
             ),
             mainPanel(
@@ -167,12 +167,15 @@ server <- function(input, output,session) {
     paste("The correlation between the two is: ", cor(table_in[,input$in_sel_scatter_yVar],table_in[,input$in_sel_scatter_xVar]))
   })
   
-  output$plot_box <- renderPlot({
+  output$plot_box <- renderPlotly({
     table_in<-dataload()
-    plot_ly(y=input$in_sel_box_yVar, type = "box", quartilemethod="exclusive")
+    plot_ly(data = table_in, y=~table_in[,input$in_sel_box_yVar],type='box',name=input$in_sel_box_yVar) %>%  layout(yaxis=list(title=input$in_sel_box_yVar))
   })
 }
 
 ######################### 4. 샤이니 실행 ###############################
 
 shinyApp(ui = ui, server = server)
+
+#drop_cnt
+
