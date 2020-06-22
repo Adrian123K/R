@@ -130,7 +130,8 @@ str_trim('             apple          banana        orange        ')
 
 library(sqldf)
 Fruits
-sqldf('select * from Fruits where Fruit=\'Apples\'')
+str(Fruits)
+7sqldf('select * from Fruits where Fruit=\'Apples\'')
 sqldf('select * from Fruits where Fruit="Apples"')
 sqldf('select * from Fruits limit 4')
 sqldf('select * from Fruits order by year')
