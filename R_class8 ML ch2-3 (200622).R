@@ -60,3 +60,24 @@ cor(emp$comm,emp$sal) # 아주 약한 음의 상관관계를 보이고 있다
 plot(car$mileage, car$price, pch=21, col='red',bg='red')
 cor(car$mileage, car$price) # 강한 음의 상관관계
 
+install.packages("gmodels")
+library(gmodels)
+
+attach(emp)
+tapply(empno, list(deptno,job), length, default=0)
+
+CrossTable(emp$deptno, emp$job)
+
+library(data.table)
+
+data.frame(월급=emp$sal, '2500이상'=emp$sal>=2500)
+emp$sal_tf<-emp$sal>=2500
+emp
+CrossTable(emp$job, emp$sal_tf)
+
+#195
+car$conservative<- car$color %in% c('Black','Gray','Silver','White')
+table(car$conservative)
+CrossTable(car$model, car$conservative)
+
+print(1-pchisq(q=8.33,df=1,lower.tail = T))
