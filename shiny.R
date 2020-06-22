@@ -13,6 +13,9 @@ require(lattice)
 require(RColorBrewer)
 
 
+
+######################### 2. 화면 개발 ###########################################
+
 sidebar <- dashboardSidebar(
   sidebarMenu(
     # fileInput : csv 파일 및 다양한 파일들을 불러오는 화면 구현
@@ -24,13 +27,16 @@ sidebar <- dashboardSidebar(
     menuItem("Table",
              menuSubItem('Tableformat',tabName='tableformat') ),
     
+    # 그래프 종류 보여줌
     menuItem("Plot",
              menuSubItem('barplot',tabName='barplot'),
              menuSubItem('barplot_advenced',tabName='barplotly'),
              menuSubItem('pieplot',tabName='piechart'),
              menuSubItem('lineplot',tabName='lineplot'),
              menuSubItem('scatterplot',tabName='scatterplot'),
-             menuSubItem('boxplot',tabName='boxplot')
+             menuSubItem('boxplot',tabName='boxplot'),
+             menuSubItem('histogram',tabName='histplot')
+             
     )
     
     
@@ -120,7 +126,19 @@ body <- dashboardBody(
             mainPanel(
               plotlyOutput('plot_box')
             )
+    ),
+    
+    ##### hist plot
+    tabItem(tabName = "histplot",
+            sidebarPanel(
+              selectInput("in_sel_hist_Var1","Variable 1:", choices = NULL)   
+            ),
+            mainPanel(
+              plotlyOutput('plot_hist')
+            )
     )
+    
+    
   )
 )
 
@@ -131,6 +149,10 @@ ui<-dashboardPage(
   sidebar,
   body
 )
+
+
+######################3. 서버단 개발 ########################################
+
 
 server <- function(input, output,session) {
   options(warn = -1)
@@ -166,6 +188,8 @@ server <- function(input, output,session) {
     
     updateSelectInput(session, "in_sel_box_Var1", choices = colnames(data1))
     updateSelectInput(session, "in_sel_box_Var2", choices = colnames(data1))
+    
+    updateSelectInput(session, "in_sel_hist_Var1", choices = colnames(data1))
     
     return(data1)
     
@@ -254,6 +278,8 @@ server <- function(input, output,session) {
   output$plot_box <- renderPlotly({
     table_in<-dataload()
     
+    x <- list(title = input$in_sel_line_xVar)
+    
     subplot(
       add_markers = plot_ly(data = table_in, y=~table_in[,input$in_sel_box_Var1],type='box',name=input$in_sel_box_Var1) %>%
         layout(yaxis=list(title=input$in_sel_box_Var1)),
@@ -261,6 +287,22 @@ server <- function(input, output,session) {
         layout(yaxis=list(title=input$in_sel_box_Var2))
     )
     
+    
+  })
+  
+  #### histogram(히스토그램)
+  output$plot_hist <- renderPlotly({
+    table_in<-dataload()
+    
+    x <- list(title = input$in_sel_hist_Var1)
+    
+    plot_ly(x=~table_in[,input$in_sel_hist_Var1],
+            type = "histogram")  %>% 
+      layout(title = "Histogram",
+             xaxis = list(title = x,
+                          zeroline = FALSE),
+             yaxis = list(title = "Count",
+                          zeroline = FALSE))
     
   })
   
