@@ -145,7 +145,8 @@ body <- dashboardBody(
 
 
 ui<-dashboardPage(
-  dashboardHeader(title='my graph'),
+  skin='purple',
+  dashboardHeader(title='Adrian Auto',titleWidth = 250),
   sidebar,
   body
 )
