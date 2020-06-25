@@ -103,20 +103,36 @@ my_func <- function() {
     if (result2=='M'){
       print('ML 모델이 암환자로 예측 했습니다.')
     } else {
-      print('ML모델이 정상환자로 예측 했습니다.')
+      print('ML 모델이 정상환자로 예측 했습니다.')
     }
     
   }
   
+  naive_fun<-function(){
+    library(e1071)  
+    
+    flu <- read.csv("flu.csv", header=T, stringsAsFactors=TRUE)
+    
+    train <- flu[1:nrow(flu),-1]  
+    model <- naiveBayes(train[,1:4], train$flue , laplace=0)
+    
+    fname <- file.choose()   
+    test <- read.csv(fname, header=T, stringsAsFactor=F )
+    
+    result <- predict( model, test, type='raw')  
+    print(paste('독감 환자일 확률이',round(result[2]*100,digits=1),'% 입니다.'))
+  }
   
-  x1 <- menu( c('산포도 그래프','히스토그램 그래프','사분위수 그래프', '유방암 진단') ,            
-              title='숫자를 선택하세요 ~' )  
+  
+  x1 <- menu( c('산포도 그래프','히스토그램 그래프','사분위수 그래프', '유방암 진단', '독감 진단') ,            
+              title='숫자를 선택하세요: ' )  
   
   switch ( x1,            
-           san1 = {   my_scatter()       } ,          
-           san2 = {   my_hist()          } ,          
+           san1 = {   my_scatter()       },          
+           san2 = {   my_hist()          },          
            san3 = {   my_box()           },
-           san4 = {   knn_fun()          }
+           san4 = {   knn_fun()          },
+           san5 = {   naive_fun()        }
   )  
 }
 
