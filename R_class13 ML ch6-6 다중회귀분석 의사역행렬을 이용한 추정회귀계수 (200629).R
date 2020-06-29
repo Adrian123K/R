@@ -23,3 +23,27 @@ lnch2
 
 reg(y=launch$distress_ct,lnch2)
 
+smp <- read.csv('multi_hg.csv',head=T)
+head(smp)
+reg(smp$만족감,smp[,1:3])
+
+attach(smp)
+smp_model <- lm(만족감~외관+편의성+유용성,data=smp)
+smp_model
+
+#262
+subj <- read.csv('sports.csv',head=T)
+head(subj)
+reg(y=subj$acceptance,x=subj[,-1])
+lm(acceptance~academic+sports+music,data=subj)
+
+#263
+normalize<-function(x) {
+  return( (x-min(x))/ ( max(x)-min(x)))
+}
+subj2 <- subj[,-1]
+rs <- lapply(subj2,normalize)
+rs <- as.data.frame(rs)
+head(rs)
+lm(acceptance~.,data=rs)
+
