@@ -21,3 +21,4 @@ test_m
 summary(test_m)
 vif(test_m)
 vif(test_m) > 15 # 아이큐, 등급평균
+

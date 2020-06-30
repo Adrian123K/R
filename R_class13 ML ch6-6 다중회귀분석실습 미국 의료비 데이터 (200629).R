@@ -36,6 +36,8 @@ pairs.panels(insurance[c('age','bmi','children','expenses')])
 m5 <- lm( expenses ~ age + children + bmi +smoker +region,  data=insurance)
 m5
 
+vif(m5)
+
 #또는
 attach(insurance)
 lm(expenses ~ .,  data= insurance)  
@@ -66,6 +68,8 @@ pairs.panels(insurance[c('age','bmi','children','expenses','age2','bmi30')])
 attach(insurance)
 rs_m2 <- lm(expenses ~ .,  data= insurance)
 summary(rs_m2)
+
+vif(rs_m2)
 
 # 상호작용 파생변수 추가
 rs_m4 <- lm(expenses ~ age+age2+children+bmi+sex+bmi30*smoker+region,data=insurance)
