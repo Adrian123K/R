@@ -1,0 +1,71 @@
+## 0. 한글 깨짐 방지  
+```{r }
+Sys.setlocale("LC_COLLATE", "ko_KR.UTF-8")
+setwd("d:/R")
+```
+## 1.주제 
+
+ 미국 보스턴 지역의 집 값을 예측하는 인공신경망 구현하기
+
+## 2.데이터 소개 
+
+보스턴 시의 주택 가격에 대한 데이터이다. 
+주택의 여러가진 요건들과 주택의 가격 정보가 포함되어 있다. 주택의 가격에 영향을 미치는 요소를 분석하고자 하는 목적으로 사용될 수 있다. 회귀분석 등의 분석에 활용될 수 있다. 
+
+보스턴 주택 데이터는 여러 개의 측정지표들 (예를 들어, 범죄율, 학생/교사 비율 등)을 포함한, 보스턴 인근의 주택 가격의 중앙값(median value)이다. 이 데이터 집합은 14개의 변수를 포함하고 있다. 
+
+```{r }
+boston<-read.csv("boston.csv", stringsAsFactors=T)
+str(boston)
+head(boston)
+```
+
+
+## 3. 데이터 탐색 
+
+보스턴 하우징 데이터의 결측치와 이상치가 있는지 확인해보고 종속변수의 데이터 분포가 정규성을 띄는지 확인해본다.
+
+```{r}
+summary(boston$MEDV)
+hist(boston$MEDV)
+```
+
+## 4. 데이터로 모델 훈련 
+
+```{r}
+normalize <- function(x) {
+  return((x - min(x)) / (max(x) - min(x)))
+}
+boston_norm <- as.data.frame(lapply(boston, normalize))
+set.seed(1)
+s_cnt<-round(0.7*(nrow(boston_norm)))
+s_index<-sample(1:nrow(boston_norm), s_cnt, replace=F)
+
+boston_train <- boston_norm[s_index, ]
+boston_test <- boston_norm[-s_index, ]
+
+library(neuralnet)
+
+boston_model <- neuralnet(MEDV~CRIM+ZN+INDUS+CHAS+NOX+RM+AGE+DIS+RAD+TAX+PTRATIO+B+LSTAT, data=boston_train, hidden=10)
+```
+
+## 5. 모델 성능 평가 
+
+```{r}
+model_results <- compute(boston_model, boston_test[1:13])
+
+predicted_houseprice <- model_results$net.result
+cor(predicted_houseprice, boston_test$MEDV)
+```
+
+## 6. 모델 성능 개선 
+
+```{r}
+boston_model2 <- neuralnet(MEDV~CRIM+ZN+INDUS+CHAS+NOX+RM+AGE+DIS+RAD+TAX+PTRATIO+B+LSTAT, 
+                           data=boston_train, hidden=c(10, 5), rep=10)
+model_results2 <- compute(boston_model2, boston_test[1:13])
+
+predicted_houseprice2 <- model_results2$net.result
+
+cor(predicted_houseprice2, boston_test$MEDV)
+```

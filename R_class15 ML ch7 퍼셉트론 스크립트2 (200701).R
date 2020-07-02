@@ -1,7 +1,6 @@
 inputs1 <- matrix(c(0,1,0,1,0,0,1,1),nrow=4)
 targets1 <- matrix(c(0,0,0,1),nrow=4)
 input <- cbind(c(1,1,1,1),inputs1)
-
 r <- 0.05
 
 and_pcn <- function(input,taget,r){
