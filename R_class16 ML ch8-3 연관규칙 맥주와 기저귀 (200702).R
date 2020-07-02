@@ -34,12 +34,9 @@ install.packages("rgl")
 library(sna)
 library(rgl)
 
-b2 <- t(as.matrix(trans)) %*% as.matrix(trans) 
-
-library(sna)
-library(rgl)
-
-b2.w <- b2 - diag(diag(b2))
+b2 <- t(as.matrix(trans)) %*% as.matrix(trans) # 희소행렬 생성
+b2.w <- b2 - diag(diag(b2)) # 대각성분 제거
+b2.w
 
 gplot(b2.w , displaylabel=T , 
       vertex.cex=sqrt(diag(b2)) , 

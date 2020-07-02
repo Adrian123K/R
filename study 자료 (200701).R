@@ -17,3 +17,17 @@ title(expression(italic(weight==3.45%*%height-87.52)))
 par(mfrow=c(2,2))
 plot(fit)
 par(mfrow=c(1,1))
+
+library(devtools)
+# install_github("kassambara/datarium")
+
+install.packages('tidyverse')
+install.packages('datarium')
+library(tidyverse)
+library(datarium)
+
+data("marketing", package = "datarium")
+head(marketing, 4)
+model <- lm(sales ~ youtube + facebook + newspaper, data = marketing) 
+summary(model)
+
