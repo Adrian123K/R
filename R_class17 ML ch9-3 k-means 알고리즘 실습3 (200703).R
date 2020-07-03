@@ -34,14 +34,14 @@ train_num <- round(0.9*nrow(wbcd_n),0)
 wbcd_train <- wbcd_n[1:train_num,]
 wbcd_test <- wbcd_n[(train_num+1):nrow(wbcd_n),]
 
-wbcd_train_labels <- wbcd2[1:train_num,1]
-wbcd_test_labels <- wbcd2[(train_num+1):nrow(wbcd_n),1]
+wbcd_train_label <- wbcd2[1:train_num,1]
+wbcd_test_label <- wbcd2[(train_num+1):nrow(wbcd_n),1]
 
 
-knn_rs <- knn(train=wbcd_train, test=wbcd_test, cl=wbcd_train_labels, k=51)
+knn_rs <- knn(train=wbcd_train, test=wbcd_test, cl=wbcd_train_label, k=51)
 km_rs <- kmeans(wbcd_test,2)
 km_rs
 
-knn_rs2 <- ifelse(wbcd_test_labels=='M',2,1)
+knn_rs2 <- ifelse(wbcd_test_label=='M',2,1)
 sum(knn_rs2==km_rs$cluster)
 fviz_cluster(km_rs, data=, stand=F)

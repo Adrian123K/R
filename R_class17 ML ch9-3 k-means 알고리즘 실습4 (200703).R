@@ -1,6 +1,6 @@
 teens <-  read.csv("snsdata.csv")
 str(teens)
-
+nrow(teens)
 table(teens$gender)
 
 table(teens$gender, useNA="ifany")
