@@ -66,26 +66,28 @@ train_num <- round(0.9*nrow(wbcd_n),0)
 wbcd_train <- wbcd_n[1:train_num,]
 wbcd_test <- wbcd_n[(train_num+1):nrow(wbcd_n),]
 
-wbcd_train_labels <- wbcd2[1:train_num,1]
-wbcd_test_labels <- wbcd2[(train_num+1):nrow(wbcd_n),1]
+wbcd_train_label <- wbcd2[1:train_num,1]
+wbcd_test_label <- wbcd2[(train_num+1):nrow(wbcd_n),1]
 
-rs <- knn(train=wbcd_train, test=wbcd_test, cl=wbcd_train_labels, k=51)
+library(class)
+rs <- knn(train=wbcd_train, test=wbcd_test, cl=wbcd_train_label, k=51)
 rs
 
-x <- data.frame(실제=wbcd_test_labels, 예측=rs)
-x <- data.frame(실제=wbcd_test_labels, 예측=rs)
+x <- data.frame(실제=wbcd_test_label, 예측=rs)
+x <- data.frame(실제=wbcd_test_label, 예측=rs)
 table(x)
 
+library(gmodels)
 par(new=T)
-g2 <- CrossTable(x=wbcd_test_labels, y=rs,chisq=F)
+g2 <- CrossTable(x=wbcd_test_label, y=rs,chisq=F)
 g2$prop.tbl[1]+g2$prop.tbl[4] # 정확도
 
 temp<-c()
 for ( i in 1:200 ) {
   if  ( i%%2 != 0  ) { 
     wbcd_test_pred <- knn(train=wbcd_train, test=wbcd_test,
-                          cl = wbcd_train_labels,  k=i )
-    g2 <- CrossTable(x=wbcd_test_labels, y=wbcd_test_pred, chisq=FALSE)
+                          cl = wbcd_train_label,  k=i )
+    g2 <- CrossTable(x=wbcd_test_label, y=wbcd_test_pred, chisq=FALSE)
     g3 <- g2$prop.tbl[1] + g2$prop.tbl[4]
     temp<-append(temp, g3 )
   }
@@ -98,8 +100,8 @@ temp<-c()
 for ( i in 1:200 ) {
   if  ( i%%2 != 0  ) { 
     wbcd_test_pred <- knn(train=wbcd_train, test=wbcd_test,
-                          cl = wbcd_train_labels,  k=i )
-    g2 <- CrossTable(x=wbcd_test_labels, y=wbcd_test_pred, chisq=FALSE)
+                          cl = wbcd_train_label,  k=i )
+    g2 <- CrossTable(x=wbcd_test_label, y=wbcd_test_pred, chisq=FALSE)
     g3 <- g2$prop.tbl[1] + g2$prop.tbl[4]
     temp<-append(temp, g3 )
   }

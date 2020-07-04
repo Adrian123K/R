@@ -19,8 +19,11 @@ my_func <- function() {
     ycol2 <- table[,ycol]
     
     plot(xcol2,ycol2,
-         main=paste(xcol,'과',ycol,'의 산포도 그래프'),lwd=2,             
+         main=paste(xcol,'과',ycol,'의 추정회귀직선 및 산포도'),lwd=2,             
          xlab=xcol,ylab=ycol,col='red',pch=21,bg='red')
+    model_scatter <- lm( ycol2 ~ xcol2, data=table)
+    abline( model_scatter,  col="red") 
+    
   }
   
   my_hist <- function() {

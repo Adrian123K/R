@@ -1,0 +1,96 @@
+## 0. 한글 깨짐 방지  
+
+```{r }
+
+Sys.setlocale("LC_COLLATE", "ko_KR.UTF-8")
+
+setwd("d:/R")
+
+```
+
+## 1.주제 
+
+ 은행 대출 채무를 불이할것을 예측되는 고객은 누구인가?
+
+
+## 2.데이터 소개 
+
+독일의 한 신용기관에서 얻은 대출정보가 들어있다. 
+신용 데이터셋은 1000개의 대출 예시와 대출과 대출 신청자의 특성을
+나타내는 일련의 수치특징과 명목특징을 포함하고 잇다. 
+
+```{r }
+
+credit <- read.csv("credit.csv",stringsAsFactors = T)
+
+str(credit) 
+
+
+```
+
+
+
+## 2. 데이터 탐색 
+
+
+
+To insert an R code chunk, you can type it manually or just press `Chunks - Insert chunks` or use the shortcut key. This will produce the following code chunk:
+
+
+
+```{r}
+
+prop.table( table(credit$default)  )
+hist( credit$amount, col="grey", density=80)
+summary( credit$amount)
+
+
+```
+
+
+
+## 3. 데이터로 모델 훈련 
+
+
+
+```{r}
+
+ set.seed(0)
+
+ credit_shuffle <-  credit[ sample( nrow(credit) ),  ]
+ train_num <- round( 0.9 * nrow(credit_shuffle), 0) 
+ credit_train <- credit_shuffle[1:train_num ,  ]
+ credit_test  <- credit_shuffle[(train_num+1) : nrow(credit_shuffle),  ]
+ library(C50)
+ credit_model <- C5.0( credit_train[ ,-17] , credit_train[  , 17] )
+ credit_result <-  predict( credit_model, credit_test[  , -17] )
+ 
+
+```
+
+## 4. 모델 성능 평가 
+
+
+```{r}
+ library(gmodels)
+ CrossTable(  credit_test[   , 17], credit_result )
+```
+
+## 5. 모델 성능 개선 
+
+```{r}
+
+library(ipred)
+set.seed(300)
+
+mybag <- bagging(default ~ ., data = credit, nbagg = 25)
+credit_pred <- predict(mybag, credit)
+table(credit_pred, credit$default)
+
+library(caret)
+set.seed(300)
+ctrl <- trainControl(method = "cv", number = 10)
+train(default ~ ., data = credit, method = "treebag",  trControl = ctrl)
+
+
+```
