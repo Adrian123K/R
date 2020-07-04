@@ -36,17 +36,12 @@ sidebar <- dashboardSidebar(
              menuSubItem('scatterplot',tabName='scatterplot'),
              menuSubItem('boxplot',tabName='boxplot'),
              menuSubItem('histogram',tabName='histplot')
-             
     )
-    
-    
   )
 )
 
 
 body <- dashboardBody(
-  
-  
   tabItems(
     
     ##### table_format
