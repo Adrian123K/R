@@ -51,7 +51,10 @@ credit <- read.csv("credit.csv")
 
 set.seed(123)
 
-folds <- createFolds(credit$default, k = 10)
+in_train <- createDataPartition(credit$default,p = 0.75, list = FALSE) 
+credit_train <- credit[in_train, ] # 훈련 데이터 구성
+credit_test <- credit[-in_train, ] # 테스트 데이터 구성
+
 cv_results <- lapply(folds, function(x) {
   credit_train <- credit[-x, ]
   credit_test <- credit[x, ]
@@ -63,3 +66,78 @@ cv_results <- lapply(folds, function(x) {
 })
 
 str(cv_results)
+mean(unlist(cv_results))
+
+############################################# 점심
+library(caret)
+library(C50)
+library(irr)
+
+credit <- read.csv("credit.csv",stringsAsFactors = T)
+
+#set.seed(123)
+#random_ids <- order(runif(800))
+#credit <- credit[random_ids[1:800],]
+
+in_train <- createDataPartition(credit$default,p = 0.75, list = FALSE) 
+credit_train <- credit[in_train, ] 
+credit_test <- credit[-in_train, ] 
+
+nrow(credit_train) #601
+nrow(credit_test) #199
+
+folds <- createFolds(credit$default, k = 10)
+
+cv_results <- lapply(folds, function(x) {
+  credit_train <- credit[-x, ]
+  credit_test <- credit[x, ]
+  credit_model <- C5.0(default ~ ., data = credit_train)
+  credit_pred <- predict(credit_model, credit_test)
+  credit_actual <- credit_test$default
+  kappa <- kappa2(data.frame(credit_actual, credit_pred))$value
+  return(kappa)
+})
+
+str(cv_results)
+
+mean(unlist(cv_results))
+
+# 296
+credit <- read.csv("credit.csv",stringsAsFactors = T)
+
+set.seed(123)
+folds <- createFolds(credit$default, k = 10)
+
+cv_results <- lapply(folds, function(x) {
+  credit_train <- credit[-x, ]
+  credit_test <- credit[x, ]
+  credit_model <- C5.0(default ~ ., data = credit_train)
+  credit_pred <- predict(credit_model, credit_test)
+  credit_actual <- credit_test$default
+  
+  x <- data.frame(credit_actual, credit_pred)
+  rs <- sum(x$credit_actual==x$credit_pred)/length(x$credit_actual==x$credit_pred)
+  return(rs)
+})
+str(cv_results)
+
+
+# caret 패키지 사용
+credit <- read.csv('credit.csv',stringsAsFactors = T)
+set.seed(300)
+m <- train(default~., data=credit, method='C5.0')
+p <- predict(m,credit)
+table(p,credit$default)
+
+m <- train(default~., data=credit,method='C5.0')
+ctrl <- trainControl(method='cv',number=10,selectionFunction='oneSE')
+grid <- expand.grid(.model='tree',
+                    .trials=c(1,5,10,15,20,25,30,35), # trials를 8개로 제한하겠다
+                    .winnow='FALSE')
+
+m <- train(default~., data=credit, method='C5.0',
+           metric='kappa',
+           trControl=ctrl,
+           truneGrid=grid)
+p <- predict(m, credit)
+table(p,credit$default)
