@@ -46,7 +46,7 @@ p_adaboost$confusion
 table(p_adaboost$class,credit$default)
 
 
-# 300
+##300 (오막문)
 #install.packages('adabag')
 #library(adabag)
 
