@@ -1,13 +1,15 @@
 # ■ 홀드 아웃 과 k 홀드 아웃 
 ## Estimating Future Performance ----
 # partitioning data
-install.packages("caret") 
 
+#install.packages("caret") 
 library(caret)
-credit <- read.csv("credit.csv") # 독일 은행의 채무 불이행자를 예측하기 위한 데이터 
+credit <- read.csv("credit.csv",stringsAsFactors = T) # 독일 은행의 채무 불이행자를 예측하기 위한 데이터 
 
 # Holdout method
 # using random IDs
+
+nrow(credit)
 
 random_ids <- order(runif(1000)) # 난수 1000개 생성 
 
@@ -15,6 +17,9 @@ credit_train <- credit[random_ids[1:500],]  # 훈련 50%
 credit_validate <- credit[random_ids[501:750], ] # 검정 25%
 credit_test <- credit[random_ids[751:1000], ]  # 테스트 25%
 
+nrow(credit_train)
+nrow(credit_validate)
+nrow(credit_test)
 
 # using caret function
 
@@ -22,6 +27,9 @@ in_train <- createDataPartition(credit$default, p = 0.75, list = FALSE)
 
 credit_train <- credit[in_train, ] # 훈련 데이터 구성
 credit_test <- credit[-in_train, ] # 테스트 데이터 구성 
+
+nrow(credit_train)
+nrow(credit_test)
 
 # 10-fold CV
 
